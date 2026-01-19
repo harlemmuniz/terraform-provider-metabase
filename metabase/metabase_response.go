@@ -263,3 +263,35 @@ func (r *UploadContentTranslationDictionaryResponse) BodyString() string {
 func (r *UploadContentTranslationDictionaryResponse) HasExpectedStatusWithoutExpectedBody() bool {
 	return r.StatusCode() == 200 && r.JSON200 == nil
 }
+
+func (r *CreateUserResponse) BodyString() string {
+	return string(r.Body)
+}
+
+func (r *CreateUserResponse) HasExpectedStatusWithoutExpectedBody() bool {
+	return r.StatusCode() == 200 && r.JSON200 == nil
+}
+
+func (r *GetUserResponse) BodyString() string {
+	return string(r.Body)
+}
+
+func (r *GetUserResponse) HasExpectedStatusWithoutExpectedBody() bool {
+	return r.StatusCode() == 200 && r.JSON200 == nil
+}
+
+func (r *UpdateUserResponse) BodyString() string {
+	return string(r.Body)
+}
+
+func (r *UpdateUserResponse) HasExpectedStatusWithoutExpectedBody() bool {
+	return r.StatusCode() == 200 && r.JSON200 == nil
+}
+
+func (r *DeleteUserResponse) BodyString() string {
+	return string(r.Body)
+}
+
+func (r *DeleteUserResponse) HasExpectedStatusWithoutExpectedBody() bool {
+	return false
+}

@@ -570,6 +570,94 @@ paths:
               schema:
                 $ref: "#/components/schemas/Session"
 
+  /user:
+    post:
+      operationId: createUser
+      description: Creates a new user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserBody"
+      responses:
+        200:
+          description: The user was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    get:
+      operationId: listUsers
+      description: Retrieves all users.
+      responses:
+        200:
+          description: The list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /user/{userId}:
+    get:
+      operationId: getUser
+      description: Retrieves a single user.
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the user.
+      responses:
+        200:
+          description: The user was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    put:
+      operationId: updateUser
+      description: Updates a single user.
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserBody"
+      responses:
+        200:
+          description: The user was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    delete:
+      operationId: deleteUser
+      description: Deletes a single user.
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the user.
+      responses:
+        204:
+          description: The user was successfully deleted.
+
   /table:
     get:
       operationId: listTables
@@ -1532,3 +1620,73 @@ components:
         description:
           type: string
           description: A description for the table.
+    # Users.
+    User:
+      type: object
+      description: A Metabase user.
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+          description: The ID of the user.
+        email:
+          type: string
+          description: The email address of the user.
+        first_name:
+          type: string
+          description: The first name of the user.
+        last_name:
+          type: string
+          description: The last name of the user.
+        common_name:
+          type: string
+          description: The common name of the user (full name).
+        is_active:
+          type: boolean
+          description: Whether the user is active.
+        is_superuser:
+          type: boolean
+          description: Whether the user is a superuser.
+      required:
+        - id
+        - email
+        - first_name
+        - last_name
+    CreateUserBody:
+      type: object
+      description: The payload when creating a new user.
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          description: The email address of the user.
+        first_name:
+          type: string
+          description: The first name of the user.
+        last_name:
+          type: string
+          description: The last name of the user.
+        password:
+          type: string
+          description: The password for the user (optional, can be set later).
+      required:
+        - email
+        - first_name
+        - last_name
+    UpdateUserBody:
+      type: object
+      description: The payload when updating an existing user.
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          description: The email address of the user.
+        first_name:
+          type: string
+          description: The first name of the user.
+        last_name:
+          type: string
+          description: The last name of the user.
+        is_superuser:
+          type: boolean
+          description: Whether the user is a superuser.
