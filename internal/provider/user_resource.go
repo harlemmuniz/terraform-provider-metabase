@@ -67,8 +67,8 @@ func (r *UserResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 	}
 }
 
-// Updates the given `UserResourceModel` from the `User` returned by the Metabase API.
-func updateModelFromUser(u metabase.User, data *UserResourceModel) diag.Diagnostics {
+// Updates the given `UserResourceModel` from the API user response.
+func updateModelFromUser(ctx context.Context, u metabase.User, data *UserResourceModel) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	data.Id = types.Int64Value(int64(u.Id))
@@ -106,7 +106,8 @@ func (r *UserResource) Create(ctx context.Context, req resource.CreateRequest, r
 		return
 	}
 
-	resp.Diagnostics.Append(updateModelFromUser(*createResp.JSON200, data)...)
+	// Update model from created user
+	resp.Diagnostics.Append(updateModelFromUser(ctx, *createResp.JSON200, data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -122,20 +123,21 @@ func (r *UserResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		return
 	}
 
-	getResp, err := r.client.GetUserWithResponse(ctx, int(data.Id.ValueInt64()))
+	userId := int(data.Id.ValueInt64())
+	getUserResp, err := r.client.GetUserWithResponse(ctx, userId)
 
-	resp.Diagnostics.Append(checkMetabaseResponse(getResp, err, []int{200, 204, 404}, "get user")...)
+	resp.Diagnostics.Append(checkMetabaseResponse(getUserResp, err, []int{200, 404}, "get user")...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// The Metabase API can also return "no content" when the user has been deleted.
-	if getResp.StatusCode() == 404 || getResp.StatusCode() == 204 {
+	// User not found, remove from state
+	if getUserResp.StatusCode() == 404 {
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	resp.Diagnostics.Append(updateModelFromUser(*getResp.JSON200, data)...)
+	resp.Diagnostics.Append(updateModelFromUser(ctx, *getUserResp.JSON200, data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -161,14 +163,15 @@ func (r *UserResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		LastName:  &lastName,
 	}
 
-	updateResp, err := r.client.UpdateUserWithResponse(ctx, int(data.Id.ValueInt64()), updateBody)
+	userId := int(data.Id.ValueInt64())
+	updateResp, err := r.client.UpdateUserWithResponse(ctx, userId, updateBody)
 
 	resp.Diagnostics.Append(checkMetabaseResponse(updateResp, err, []int{200}, "update user")...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	resp.Diagnostics.Append(updateModelFromUser(*updateResp.JSON200, data)...)
+	resp.Diagnostics.Append(updateModelFromUser(ctx, *updateResp.JSON200, data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}

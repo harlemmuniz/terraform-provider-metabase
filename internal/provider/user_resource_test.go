@@ -86,6 +86,40 @@ func testAccCheckUserDestroy(s *terraform.State) error {
 	return nil
 }
 
+func testAccUserResourceWithGroups(name string, email string, firstName string, lastName string) string {
+	return fmt.Sprintf(`
+resource "metabase_permissions_group" "test_group_1" {
+  name = "Test Group 1"
+}
+
+resource "metabase_permissions_group" "test_group_2" {
+  name = "Test Group 2"
+}
+
+resource "metabase_user" "%s" {
+  email      = "%s"
+  first_name = "%s"
+  last_name  = "%s"
+
+  user_group_memberships = [
+    {
+      group_id         = metabase_permissions_group.test_group_1.id
+      is_group_manager = true
+    },
+    {
+      group_id         = metabase_permissions_group.test_group_2.id
+      is_group_manager = false
+    }
+  ]
+}
+`,
+		name,
+		email,
+		firstName,
+		lastName,
+	)
+}
+
 func TestAccUserResource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -112,6 +146,26 @@ func TestAccUserResource(t *testing.T) {
 					resource.TestCheckResourceAttr("metabase_user.test", "email", "test.user@example.com"),
 					resource.TestCheckResourceAttr("metabase_user.test", "first_name", "Updated"),
 					resource.TestCheckResourceAttr("metabase_user.test", "last_name", "Name"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccUserResourceWithGroups(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckUserDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: providerConfig + testAccUserResourceWithGroups("test", "test.user.groups@example.com", "Test", "User"),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testAccCheckUserExists("metabase_user.test"),
+					resource.TestCheckResourceAttrSet("metabase_user.test", "id"),
+					resource.TestCheckResourceAttr("metabase_user.test", "email", "test.user.groups@example.com"),
+					resource.TestCheckResourceAttr("metabase_user.test", "first_name", "Test"),
+					resource.TestCheckResourceAttr("metabase_user.test", "last_name", "User"),
+					resource.TestCheckResourceAttr("metabase_user.test", "user_group_memberships.#", "2"),
 				),
 			},
 		},
