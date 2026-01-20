@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/flovouin/terraform-provider-metabase/metabase"
+	"github.com/occam-bci/terraform-provider-metabase/metabase"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"

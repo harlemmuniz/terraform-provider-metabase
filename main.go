@@ -5,7 +5,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/flovouin/terraform-provider-metabase/internal/provider"
+	"github.com/occam-bci/terraform-provider-metabase/internal/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
 
@@ -24,7 +24,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/flovouin/metabase",
+		Address: "registry.terraform.io/occam-bci/metabase",
 		Debug:   debug,
 	}
 
