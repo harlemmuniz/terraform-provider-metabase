@@ -1,0 +1,1692 @@
+openapi: 3.0.0
+
+info:
+  title: Metabase API
+  version: 0.44.6
+  description: API for Metabase.
+
+security:
+  - Session: []
+  - ApiKey: []
+
+paths:
+  /card:
+    post:
+      operationId: createCard
+      description: Creates a new card.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCardBody"
+      responses:
+        200:
+          description: The card was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+
+  /card/{cardId}:
+    get:
+      operationId: getCard
+      description: Retrieves a single card.
+      parameters:
+        - in: path
+          name: cardId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the card.
+      responses:
+        200:
+          description: The card was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+
+    put:
+      operationId: updateCard
+      description: Updates a single card.
+      parameters:
+        - in: path
+          name: cardId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the card.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCardBody"
+      responses:
+        200:
+          description: The card was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+
+  /collection:
+    post:
+      operationId: createCollection
+      description: Creates a new collection.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCollectionBody"
+      responses:
+        200:
+          description: The collection was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Collection"
+
+    get:
+      operationId: listCollections
+      description: Retrieves all collections.
+      parameters:
+        - in: query
+          name: archived
+          schema:
+            type: boolean
+          description: Whether the archived collections should be returned.
+          required: false
+      responses:
+        200:
+          description: The list of collections.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Collection"
+
+  /collection/graph:
+    get:
+      operationId: getCollectionPermissionsGraph
+      description: Retrieves the collection permissions graph.
+      responses:
+        200:
+          description: The collection permissions graph.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionPermissionsGraph"
+
+    put:
+      operationId: replaceCollectionPermissionsGraph
+      description: Replaces the collection permissions graph.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectionPermissionsGraph"
+      responses:
+        200:
+          description: The updated collection permissions graph.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionPermissionsGraph"
+
+  /collection/{collectionId}:
+    get:
+      operationId: getCollection
+      description: Retrieves a single collection.
+      parameters:
+        - in: path
+          name: collectionId
+          schema:
+            type: string
+          required: true
+          description: The ID of the collection.
+      responses:
+        200:
+          description: The collection was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Collection"
+
+    put:
+      operationId: updateCollection
+      description: Updates a single collection.
+      parameters:
+        - in: path
+          name: collectionId
+          schema:
+            type: string
+          required: true
+          description: The ID of the collection.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCollectionBody"
+      responses:
+        200:
+          description: The collection was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Collection"
+
+  /collection/{collectionId}/items:
+    get:
+      operationId: listCollectionItems
+      description: Retrieves the items in a single collection.
+      parameters:
+        - name: collectionId
+          in: path
+          schema:
+            type: string
+          required: true
+          description: The ID of the collection.
+        - name: models
+          in: query
+          description: The list of item types to return.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/CollectionItemModel"
+        - name: archived
+          in: query
+          description: Whether archived items should be returned instead of active ones.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: The maximum number of items to return.
+          required: false
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: The offset of the first item to return.
+          required: false
+          schema:
+            type: integer
+      responses:
+        200:
+          description: A page of items in the collection.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionItemList"
+
+  /dashboard:
+    post:
+      operationId: createDashboard
+      description: Creates a new dashboard.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDashboardBody"
+      responses:
+        200:
+          description: The dashboard was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dashboard"
+
+  /dashboard/{dashboardId}:
+    get:
+      operationId: getDashboard
+      description: Retrieves a single dashboard.
+      parameters:
+        - in: path
+          name: dashboardId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the dashboard.
+      responses:
+        200:
+          description: The dashboard was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dashboard"
+
+    put:
+      operationId: updateDashboard
+      description: Updates a single dashboard.
+      parameters:
+        - in: path
+          name: dashboardId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the dashboard.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDashboardBody"
+      responses:
+        200:
+          description: The dashboard was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dashboard"
+
+    delete:
+      operationId: deleteDashboard
+      description: Deletes a single dashboard.
+      parameters:
+        - in: path
+          name: dashboardId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the dashboard.
+      responses:
+        204:
+          description: The dashboard was successfully deleted.
+
+  /database:
+    post:
+      operationId: createDatabase
+      description: Creates a new database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDatabaseBody"
+      responses:
+        200:
+          description: The database was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Database"
+
+    get:
+      operationId: listDatabases
+      description: Retrieves all databases.
+      parameters:
+        - in: query
+          name: include
+          schema:
+            type: string
+            enum:
+              - tables
+          description: Whether the returned databases should include the list of tables for each database.
+          required: false
+        - in: query
+          name: saved
+          schema:
+            type: boolean
+          description: Whether the saved questions should appear as a virtual database.
+          required: false
+      responses:
+        200:
+          description: The list of databases.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseList"
+
+  /database/{databaseId}:
+    get:
+      operationId: getDatabase
+      description: Retrieves a single database.
+      parameters:
+        - in: path
+          name: databaseId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the database.
+      responses:
+        200:
+          description: The database was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Database"
+
+    put:
+      operationId: updateDatabase
+      description: Updates a single database.
+      parameters:
+        - in: path
+          name: databaseId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDatabaseBody"
+      responses:
+        200:
+          description: The database was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Database"
+
+    delete:
+      operationId: deleteDatabase
+      description: Deletes a single database.
+      parameters:
+        - in: path
+          name: databaseId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the database.
+      responses:
+        204:
+          description: The database was successfully deleted.
+
+  /field/{fieldId}:
+    get:
+      operationId: getField
+      description: Retrieves a single field.
+      parameters:
+        - in: path
+          name: fieldId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the field.
+      responses:
+        200:
+          description: The field was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Field"
+
+    put:
+      operationId: updateField
+      description: Updates a single field.
+      parameters:
+        - in: path
+          name: fieldId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the field.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateFieldBody"
+      responses:
+        200:
+          description: The field was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Field"
+
+  /permissions/graph:
+    get:
+      operationId: getPermissionsGraph
+      description: Retrieves the permissions graph.
+      responses:
+        200:
+          description: The permissions graph.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PermissionsGraph"
+
+    put:
+      operationId: replacePermissionsGraph
+      description: Replaces the permissions graph.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PermissionsGraph"
+      responses:
+        200:
+          description: The updated permissions graph.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PermissionsGraph"
+
+  /permissions/group:
+    post:
+      operationId: createPermissionsGroup
+      description: Creates a new permissions group.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePermissionsGroupBody"
+      responses:
+        200:
+          description: The permissions group was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PermissionsGroup"
+
+  /permissions/group/{groupId}:
+    get:
+      operationId: getPermissionsGroup
+      description: Retrieves a single permissions group.
+      parameters:
+        - in: path
+          name: groupId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the permissions group.
+      responses:
+        200:
+          description: The permissions group was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PermissionsGroup"
+
+    put:
+      operationId: updatePermissionsGroup
+      description: Updates a single permissions group.
+      parameters:
+        - in: path
+          name: groupId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the permissions group.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePermissionsGroupBody"
+      responses:
+        200:
+          description: The permissions group was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PermissionsGroup"
+
+    delete:
+      operationId: deletePermissionsGroup
+      description: Deletes a single permissions group.
+      parameters:
+        - in: path
+          name: groupId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the permissions group.
+      responses:
+        204:
+          description: The permissions group was successfully deleted.
+
+  /session:
+    post:
+      operationId: createSession
+      description: Logs in using a user name (or email address) and a password.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSessionBody"
+      responses:
+        200:
+          description: The user authenticated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+
+  /user:
+    post:
+      operationId: createUser
+      description: Creates a new user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserBody"
+      responses:
+        200:
+          description: The user was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    get:
+      operationId: listUsers
+      description: Retrieves all users.
+      responses:
+        200:
+          description: The list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /user/{userId}:
+    get:
+      operationId: getUser
+      description: Retrieves a single user.
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the user.
+      responses:
+        200:
+          description: The user was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    put:
+      operationId: updateUser
+      description: Updates a single user.
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserBody"
+      responses:
+        200:
+          description: The user was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    delete:
+      operationId: deleteUser
+      description: Deletes a single user.
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the user.
+      responses:
+        204:
+          description: The user was successfully deleted.
+
+  /table:
+    get:
+      operationId: listTables
+      description: Retrieves the list of all tables.
+      responses:
+        200:
+          description: The list of tables.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Table"
+
+  /table/{tableId}:
+    put:
+      operationId: updateTable
+      description: Updates a single table.
+      parameters:
+        - in: path
+          name: tableId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the table.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTableBody"
+      responses:
+        200:
+          description: The table was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Table"
+
+  /table/{tableId}/query_metadata:
+    get:
+      operationId: getTableMetadata
+      description: Gets the metadata for a single table.
+      parameters:
+        - in: path
+          name: tableId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the table.
+        - in: query
+          name: include_hidden_fields
+          schema:
+            type: boolean
+          required: false
+          description: Whether the query should return hidden fields.
+      responses:
+        200:
+          description: The list of tables
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TableMetadata"
+
+  # Content Translation endpoints (Enterprise Edition)
+  /ee/content-translation/csv:
+    get:
+      operationId: getContentTranslationCsv
+      summary: GET /ee/content-translation/csv
+      description: "Provides content translation dictionary in CSV format with columns: Locale Code, String, Translation"
+      tags:
+        - Content Translation
+      responses:
+        200:
+          description: Successful response
+          content:
+            text/csv:
+              schema:
+                type: string
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden (Enterprise Edition required)
+        500:
+          description: Internal server error
+
+  /ee/content-translation/dictionary/{token}:
+    get:
+      operationId: getContentTranslationDictionary
+      summary: GET /ee/content-translation/dictionary/{token}
+      description: Fetch the content translation dictionary via a JSON Web Token signed with the embedding-secret-key
+      tags:
+        - Content Translation
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema:
+            type: string
+          description: JWT token for authentication
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden (Enterprise Edition required)
+        500:
+          description: Internal server error
+
+  /ee/content-translation/upload-dictionary:
+    post:
+      operationId: uploadContentTranslationDictionary
+      summary: POST /ee/content-translation/upload-dictionary
+      description: Upload a CSV of content translations
+      tags:
+        - Content Translation
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: CSV file containing translations
+              required:
+                - file
+      responses:
+        200:
+          description: Successful upload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  translations_count:
+                    type: integer
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden (Enterprise Edition required)
+        500:
+          description: Internal server error
+
+components:
+  securitySchemes:
+    Session:
+      type: apiKey
+      in: header
+      name: X-Metabase-Session
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+
+  schemas:
+    # Cards.
+    Card:
+      type: object
+      description: A card (or question).
+      additionalProperties: true
+      properties:
+        id:
+          type: integer
+          description: The ID of the card.
+        name:
+          type: string
+          description: The name of the card.
+        archived:
+          type: boolean
+          description: Whether the card has been archived.
+      required:
+        - id
+        - name
+        - archived
+    CreateCardBody:
+      type: object
+      description: The payload when creating a new card.
+      additionalProperties: true
+    UpdateCardBody:
+      type: object
+      description: The payload when updating an existing card.
+      additionalProperties: true
+      properties:
+        archived:
+          type: boolean
+          description: Set to `true` to archive the card.
+    # Collections.
+    Collection:
+      type: object
+      description: A collection that regroups dashboards and cards.
+      additionalProperties: false
+      properties:
+        id:
+          oneOf:
+            - type: string
+            - type: integer
+          description: |-
+            The unique ID for the collection.
+            Created collections will have an integer ID. The automatically-created root collection's ID is `root`.
+        name:
+          type: string
+          description: The name of the collection.
+        description:
+          type: string
+          description: A description for the collection.
+          nullable: true
+        slug:
+          type: string
+          description: The slug for the collection, used in URLs.
+        personal_owner_id:
+          type: integer
+          description: The ID of the user owning this collection, if it is a personal collection.
+          nullable: true
+        entity_id:
+          type: string
+          description: A unique string identifier for the collection.
+        location:
+          type: string
+          description: A path-like location, useful when this is a sub-collection.
+        parent_id:
+          type: integer
+          description: The ID of the parent collection, if any.
+          nullable: true
+        archived:
+          type: boolean
+          description: |-
+            Whether the collection is archived.
+            When archived, a collection no longer appears in the list publicly.
+      required:
+        - id
+        - name
+    CollectionItemModel:
+      type: string
+      description: The type of an item in a collection.
+      enum:
+        - dashboard
+        - dataset
+        - no_models
+        - timeline
+        - snippet
+        - collection
+        - pulse
+        - card
+    CollectionItem:
+      type: object
+      description: An item (dashboard, dataset, timeline, etc) in a collection.
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+          description: The ID of the item.
+        model:
+          $ref: "#/components/schemas/CollectionItemModel"
+        name:
+          type: string
+          description: The name of the item.
+        description:
+          type: string
+          description: A description for the item.
+          nullable: true
+        entity_id:
+          type: string
+          description: A unique string identifier for the item.
+      required:
+        - id
+        - model
+        - name
+        - description
+        - entity_id
+    CollectionItemList:
+      type: object
+      description: A paginated list of items in a collection.
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          description: The list of items.
+          items:
+            $ref: "#/components/schemas/CollectionItem"
+        total:
+          type: integer
+          description: The total number of items.
+        models:
+          type: array
+          description: The list of model types included in the result.
+          items:
+            $ref: "#/components/schemas/CollectionItemModel"
+        limit:
+          type: integer
+          description: The maximum number of items in the page.
+          nullable: true
+        offset:
+          type: integer
+          description: The offset of the first item in the page.
+          nullable: true
+      required:
+        - data
+        - total
+        - models
+        - limit
+        - offset
+    CreateCollectionBody:
+      type: object
+      description: The payload used to create a new collection.
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: The name of the collection.
+        description:
+          type: string
+          description: A description for the collection.
+          nullable: true
+        parent_id:
+          type: integer
+          description: The ID of the parent collection, if any.
+          nullable: true
+      required:
+        - name
+    UpdateCollectionBody:
+      type: object
+      description: The payload used to update an existing collection.
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: The name of the collection.
+        archived:
+          type: boolean
+          description: |-
+            Whether the collection is archived.
+            When archived, a collection no longer appears in the list publicly.
+        description:
+          type: string
+          description: A description for the collection.
+          nullable: true
+        parent_id:
+          type: integer
+          description: The ID of the parent collection, if any.
+          nullable: true
+    # Collection permissions graph.
+    CollectionPermissionsGraph:
+      type: object
+      description: The entire permission graph for collections.
+      properties:
+        revision:
+          type: integer
+          description: The revision of the permissions graph.
+        groups:
+          type: object
+          description: A map where keys are group IDs and values are permissions for this group.
+          additionalProperties:
+            $ref: "#/components/schemas/CollectionPermissionsGraphCollectionPermissionsMap"
+      required:
+        - revision
+        - groups
+    CollectionPermissionsGraphCollectionPermissionsMap:
+      type: object
+      description: A map where keys are collection IDs and values are permission levels.
+      additionalProperties:
+        $ref: "#/components/schemas/CollectionPermissionLevel"
+    CollectionPermissionLevel:
+      type: string
+      description: The level of permission allowed when accessing the collection.
+      enum:
+        - none
+        - read
+        - write
+    # Dashboards.
+    Dashboard:
+      type: object
+      description: A dashboard containing cards.
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+          description: The ID of the dashboard.
+        name:
+          type: string
+          description: The name of the dashboard.
+        description:
+          type: string
+          description: A description for the dashboard.
+          nullable: true
+        collection_position:
+          type: integer
+          description: The position of the dashboard in the collection.
+          nullable: true
+        collection_id:
+          type: integer
+          description: The ID of the collection in which the dashboard is placed.
+          nullable: true
+        cache_ttl:
+          type: integer
+          description: The cache TTL.
+          nullable: true
+        archived:
+          type: boolean
+          description: Whether the dashboard has been archived.
+        parameters:
+          type: array
+          description: A list of parameters for the dashboard, that the user can tweak.
+          items:
+            $ref: "#/components/schemas/DashboardParameter"
+        dashcards:
+          type: array
+          description: The list of cards in the dashboard.
+          items:
+            $ref: "#/components/schemas/DashboardCard"
+        tabs:
+          type: array
+          description: The list of tabs in the dashboard.
+          items:
+            $ref: "#/components/schemas/DashboardTab"
+      required:
+        - id
+        - name
+        - description
+        - collection_position
+        - collection_id
+        - cache_ttl
+        - archived
+        - parameters
+        - dashcards
+        - tabs
+    CreateDashboardBody:
+      type: object
+      description: The body of the payload when creating a dashboard.
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: The name of the dashboard.
+        description:
+          type: string
+          description: A description for the dashboard.
+          nullable: true
+        collection_position:
+          type: integer
+          description: The position of the dashboard in the collection.
+          nullable: true
+        collection_id:
+          type: integer
+          description: The ID of the collection in which the dashboard is placed.
+          nullable: true
+        cache_ttl:
+          type: integer
+          description: The cache TTL.
+          nullable: true
+        parameters:
+          type: array
+          description: A list of parameters for the dashboard, that the user can tweak.
+          nullable: true
+          items:
+            $ref: "#/components/schemas/DashboardParameter"
+      required:
+        - name
+    UpdateDashboardBody:
+      type: object
+      description: The body of the payload when updating a dashboard.
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: The name of the dashboard.
+        description:
+          type: string
+          description: A description for the dashboard.
+          nullable: true
+        collection_position:
+          type: integer
+          description: The position of the dashboard in the collection.
+          nullable: true
+        collection_id:
+          type: integer
+          description: The ID of the collection in which the dashboard is placed.
+          nullable: true
+        cache_ttl:
+          type: integer
+          description: The cache TTL.
+          nullable: true
+        archived:
+          type: boolean
+          description: Set to `true` to archive the dashboard.
+        parameters:
+          type: array
+          description: A list of parameters for the dashboard, that the user can tweak.
+          items:
+            $ref: "#/components/schemas/DashboardParameter"
+        dashcards:
+          type: array
+          description: The list of cards in the dashboard.
+          items:
+            $ref: "#/components/schemas/DashboardCard"
+        tabs:
+          type: array
+          description: The list of tabs in the dashboard.
+          items:
+            $ref: "#/components/schemas/DashboardTab"
+    DashboardParameter:
+      type: object
+      description: A parameter for a dashboard, that the user can tweak.
+      additionalProperties: true
+      properties:
+        id:
+          type: string
+          description: The ID of the parameter.
+        name:
+          type: string
+          description: The displayed name for the parameter.
+        slug:
+          type: string
+          description: The slug name for the parameter.
+        type:
+          type: string
+          description: The type of parameter.
+        sectionId:
+          type: string
+          description: The ID of the section.
+        default:
+          oneOf:
+            - type: string
+            - type: array
+          description: The default value for the parameter.
+        required:
+          type: boolean
+          description: Whether the parameter is required.
+        filteringParameters:
+          type: array
+          description: A list of IDs of parameters used to limit the values of this parameter.
+          items:
+            type: string
+      required:
+        - id
+        - name
+        - slug
+        - type
+        - sectionId
+    DashboardCard:
+      type: object
+      description: A card within a dashboard.
+      properties:
+        id:
+          type: integer
+          description: The ID of the dashboard card.
+        card_id:
+          type: integer
+          description: The ID of the card.
+          nullable: true
+        row:
+          type: integer
+          description: The index of the row at which the card is placed.
+        col:
+          type: integer
+          description: The index of the column at which the card is placed.
+        size_x:
+          type: integer
+          description: The horizontal size of the card in the dashboard.
+        size_y:
+          type: integer
+          description: The vertical size of the card in the dashboard.
+        series:
+          type: array
+          description: A list of series.
+        parameter_mappings:
+          type: array
+          description: A list of parameter mappings.
+        visualization_settings:
+          type: object
+          description: The visualization settings for the card.
+          additionalProperties: true
+      required:
+        - card_id
+        - col
+        - id
+        - parameter_mappings
+        - row
+        - series
+        - size_x
+        - size_y
+        - visualization_settings
+    DashboardTab:
+      type: object
+      description: A tab within a dashboard.
+      properties:
+        id:
+          type: integer
+          description: The ID of the dashboard tab.
+        name:
+          type: string
+          description: The name of the tab.
+      required:
+        - id
+        - name
+    # Databases.
+    Database:
+      type: object
+      description: An external database that can be queried by cards and dashboards.
+      properties:
+        id:
+          type: integer
+          description: The ID for the database.
+        name:
+          type: string
+          description: The user-displayable name for the database.
+        engine:
+          $ref: "#/components/schemas/DatabaseEngine"
+        details:
+          $ref: "#/components/schemas/DatabaseDetails"
+      required:
+        - id
+        - name
+        - engine
+        - details
+    DatabaseDetails:
+      description: Engine-specific details used to configure the connection to the database.
+      oneOf:
+        - $ref: "#/components/schemas/DatabaseDetailsBigQuery"
+        - $ref: "#/components/schemas/DatabaseDetailsCustom"
+    DatabaseDetailsBigQuery:
+      type: object
+      description: The content of the `details` map for a database when connecting to BigQuery.
+      properties:
+        service-account-json:
+          type: string
+          description: The content of the service account key file.
+        project-id:
+          type: string
+          description: The ID of the GCP project containing the BigQuery datasets.
+        dataset-filters-type:
+          type: string
+          description: The behavior of how BigQuery datasets should be selected.
+          enum:
+            - inclusion
+            - exclusion
+            - all
+        dataset-filters-patterns:
+          type: string
+          description: The pattern used by the `dataset-filters-type`.
+      required:
+        - service-account-json
+    DatabaseDetailsCustom:
+      type: object
+      description: A JSON object containing database details for unsupported engines.
+      additionalProperties: true
+    CreateDatabaseBody:
+      type: object
+      description: The payload used to create a new database.
+      properties:
+        name:
+          type: string
+          description: The user-displayable name for the database.
+        engine:
+          $ref: "#/components/schemas/DatabaseEngine"
+        details:
+          $ref: "#/components/schemas/DatabaseDetails"
+      required:
+        - name
+        - engine
+        - details
+    UpdateDatabaseBody:
+      type: object
+      description: The payload used to update an existing database.
+      properties:
+        name:
+          type: string
+          description: The user-displayable name for the database.
+        engine:
+          $ref: "#/components/schemas/DatabaseEngine"
+        details:
+          $ref: "#/components/schemas/DatabaseDetails"
+    DatabaseEngine:
+      type: string
+      description: The type of database to connect to.
+      enum:
+        - bigquery-cloud-sdk
+    DatabaseList:
+      type: object
+      description: The list of databases returned by the Metabase API.
+      properties:
+        data:
+          type: array
+          description: The list of databases.
+          items:
+            $ref: "#/components/schemas/Database"
+        total:
+          type: integer
+          description: The total number of databases.
+      required:
+        - data
+        - total
+    # Fields.
+    Field:
+      type: object
+      description: A field in a database.
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+          description: The ID of the field.
+        name:
+          type: string
+          description: The name of the field (column) in the table.
+        display_name:
+          type: string
+          description: The user-displayable name for the field.
+        table_id:
+          type: integer
+          description: The ID of the parent table.
+        semantic_type:
+          type: string
+          description: The semantic type used by Metabase to improve the display and use of the field.
+          nullable: true
+        description:
+          type: string
+          description: The description of the field.
+          nullable: true
+      required:
+        - id
+        - name
+        - display_name
+        - table_id
+        - semantic_type
+        - description
+    UpdateFieldBody:
+      type: object
+      description: The payload used to update a table field.
+      additionalProperties: false
+      properties:
+        display_name:
+          type: string
+          description: The user-displayable name for the field.
+        semantic_type:
+          type: string
+          description: The semantic type used by Metabase to improve the display and use of the field.
+          nullable: true
+        description:
+          type: string
+          description: The description of the field.
+          nullable: true
+    # Permissions group.
+    PermissionsGroup:
+      type: object
+      description: A group of users to which permissions can be granted.
+      properties:
+        id:
+          type: integer
+          description: The ID of the permissions group.
+        name:
+          type: string
+          description: A user-displayable name for the group.
+      required:
+        - id
+        - name
+    CreatePermissionsGroupBody:
+      type: object
+      description: The payload used to create a new permissions group.
+      properties:
+        name:
+          type: string
+          description: A user-displayable name for the group.
+      required:
+        - name
+    UpdatePermissionsGroupBody:
+      type: object
+      description: The payload used to update an existing permissions group.
+      properties:
+        name:
+          type: string
+          description: A user-displayable name for the group.
+      required:
+        - name
+    # Group's permissions on databases.
+    PermissionsGraph:
+      type: object
+      description: The entire permission graph for databases.
+      properties:
+        revision:
+          type: integer
+          description: The revision of the permissions graph.
+        groups:
+          type: object
+          description: A map where keys are group IDs and values are permissions for this group.
+          additionalProperties:
+            $ref: "#/components/schemas/PermissionsGraphDatabasePermissionsMap"
+      required:
+        - revision
+        - groups
+    PermissionsGraphDatabasePermissionsMap:
+      type: object
+      description: A map where keys are database IDs and values are permissions related to the database.
+      additionalProperties:
+        $ref: "#/components/schemas/PermissionsGraphDatabasePermissions"
+    PermissionsGraphDatabasePermissions:
+      type: object
+      description: The permissions related to a single database.
+      properties:
+        view-data:
+          oneOf:
+            - type: string
+              title: ViewDataPermission
+              description: The permission definition for viewing data.
+              enum:
+                - unrestricted
+                - "no"
+                - legacy-no-self-service
+                - blocked
+                - impersonated
+            - type: object
+              title: ViewDataObject
+              additionalProperties: true
+              description: An object containing granular permissions.
+        create-queries:
+          type: string
+          description: The permission definition for creating queries.
+          enum:
+            - "no"
+            - query-builder-and-native
+            - query-builder
+        download:
+          $ref: "#/components/schemas/PermissionsGraphDatabaseAccess"
+        data-model:
+          $ref: "#/components/schemas/PermissionsGraphDatabaseAccess"
+        details:
+          type: string
+          description: The permission definition for accessing details.
+          enum:
+            - "yes"
+            - "no"
+      required:
+        # The falsy "no" value does not seem to be handled by the API. It is hard to know whether this property is
+        # actually required, or if it can disappear when it's "no".
+        - view-data
+    PermissionsGraphDatabaseAccess:
+      type: object
+      description: The permissions for a single access type.
+      properties:
+        schemas:
+          # The `schemas` property can either be a string or an object. The API returns an object in two cases:
+          #   1. Permissions are set to "granular" and some tables have different permissions than others
+          #   2. Permissions are modified on the Metabase Analytics database (available in pro version)
+          #
+          # Proper support for these cases requires more research. For now, we only specify the string type. It's under
+          # `oneOf` so the generated client doesn't error when it receives a non-string response. Application code is
+          # expected to detect and handle these cases.
+          oneOf:
+            - type: string
+              description: Whether "Data access" is allowed.
+              enum:
+                - full
+                - all
+                - none
+    # Sessions.
+    Session:
+      type: object
+      description: A session that can be used to perform authenticated requests to the API.
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+      required:
+        - id
+    CreateSessionBody:
+      type: object
+      description: The credentials required to create a session.
+      additionalProperties: false
+      properties:
+        username:
+          type: string
+          description: The name of the user, or his email.
+        password:
+          type: string
+          description: The password for the account.
+      required:
+        - username
+        - password
+    # Tables.
+    Table:
+      type: object
+      description: A table in a database.
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+          description: The ID of the table.
+        db_id:
+          type: integer
+          description: The ID of the parent database.
+        name:
+          type: string
+          description: The name of the table.
+        display_name:
+          type: string
+          description: The name displayed in the interface for the table.
+        entity_type:
+          type: string
+          description: The type of table.
+        schema:
+          type: string
+          description: |-
+            The database schema in which the table is located.
+            For BigQuery, this is the dataset name.
+          nullable: true
+        description:
+          type: string
+          description: A description for the table.
+          nullable: true
+      required:
+        - id
+        - db_id
+        - name
+        - display_name
+        - entity_type
+        - schema
+        - description
+    TableMetadata:
+      description: A table in a database, along with additional metadata, like the fields it contains.
+      allOf:
+        - $ref: "#/components/schemas/Table"
+        - type: object
+          additionalProperties: false
+          properties:
+            fields:
+              type: array
+              description: The list of fields in the table.
+              items:
+                $ref: "#/components/schemas/Field"
+          required:
+            - fields
+    UpdateTableBody:
+      type: object
+      description: The payload used to update a table.
+      additionalProperties: false
+      properties:
+        display_name:
+          type: string
+          description: The name displayed in the interface for the table.
+        entity_type:
+          type: string
+          description: The type of table.
+        description:
+          type: string
+          description: A description for the table.
+    # Users.
+    User:
+      type: object
+      description: A Metabase user.
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+          description: The ID of the user.
+        email:
+          type: string
+          description: The email address of the user.
+        first_name:
+          type: string
+          description: The first name of the user.
+        last_name:
+          type: string
+          description: The last name of the user.
+        common_name:
+          type: string
+          description: The common name of the user (full name).
+        is_active:
+          type: boolean
+          description: Whether the user is active.
+        is_superuser:
+          type: boolean
+          description: Whether the user is a superuser.
+      required:
+        - id
+        - email
+        - first_name
+        - last_name
+    CreateUserBody:
+      type: object
+      description: The payload when creating a new user.
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          description: The email address of the user.
+        first_name:
+          type: string
+          description: The first name of the user.
+        last_name:
+          type: string
+          description: The last name of the user.
+        password:
+          type: string
+          description: The password for the user (optional, can be set later).
+      required:
+        - email
+        - first_name
+        - last_name
+    UpdateUserBody:
+      type: object
+      description: The payload when updating an existing user.
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          description: The email address of the user.
+        first_name:
+          type: string
+          description: The first name of the user.
+        last_name:
+          type: string
+          description: The last name of the user.
+        is_superuser:
+          type: boolean
+          description: Whether the user is a superuser.
