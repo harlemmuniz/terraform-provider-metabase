@@ -90,13 +90,9 @@ func (r *PermissionsGroupMembershipResource) Create(ctx context.Context, req res
 	}
 
 	// Parse user with memberships
+	// Use Body field which already contains the read bytes (HTTPResponse.Body is already closed)
 	var userWithMemberships metabase.UserWithMemberships
-	bodyBytes, err := io.ReadAll(getUserResp.HTTPResponse.Body)
-	if err != nil {
-		resp.Diagnostics.AddError("Failed to read user response", err.Error())
-		return
-	}
-	if err := json.Unmarshal(bodyBytes, &userWithMemberships); err != nil {
+	if err := json.Unmarshal(getUserResp.Body, &userWithMemberships); err != nil {
 		resp.Diagnostics.AddError("Failed to parse user response", err.Error())
 		return
 	}
@@ -177,13 +173,9 @@ func (r *PermissionsGroupMembershipResource) Read(ctx context.Context, req resou
 	}
 
 	// Parse user with memberships
+	// Use Body field which already contains the read bytes (HTTPResponse.Body is already closed)
 	var userWithMemberships metabase.UserWithMemberships
-	bodyBytes, err := io.ReadAll(getUserResp.HTTPResponse.Body)
-	if err != nil {
-		resp.Diagnostics.AddError("Failed to read user response", err.Error())
-		return
-	}
-	if err := json.Unmarshal(bodyBytes, &userWithMemberships); err != nil {
+	if err := json.Unmarshal(getUserResp.Body, &userWithMemberships); err != nil {
 		resp.Diagnostics.AddError("Failed to parse user response", err.Error())
 		return
 	}
@@ -226,13 +218,9 @@ func (r *PermissionsGroupMembershipResource) Update(ctx context.Context, req res
 	}
 
 	// Parse user with memberships
+	// Use Body field which already contains the read bytes (HTTPResponse.Body is already closed)
 	var userWithMemberships metabase.UserWithMemberships
-	bodyBytes, err := io.ReadAll(getUserResp.HTTPResponse.Body)
-	if err != nil {
-		resp.Diagnostics.AddError("Failed to read user response", err.Error())
-		return
-	}
-	if err := json.Unmarshal(bodyBytes, &userWithMemberships); err != nil {
+	if err := json.Unmarshal(getUserResp.Body, &userWithMemberships); err != nil {
 		resp.Diagnostics.AddError("Failed to parse user response", err.Error())
 		return
 	}
@@ -299,13 +287,9 @@ func (r *PermissionsGroupMembershipResource) Delete(ctx context.Context, req res
 	}
 
 	// Parse user with memberships
+	// Use Body field which already contains the read bytes (HTTPResponse.Body is already closed)
 	var userWithMemberships metabase.UserWithMemberships
-	bodyBytes, err := io.ReadAll(getUserResp.HTTPResponse.Body)
-	if err != nil {
-		resp.Diagnostics.AddError("Failed to read user response", err.Error())
-		return
-	}
-	if err := json.Unmarshal(bodyBytes, &userWithMemberships); err != nil {
+	if err := json.Unmarshal(getUserResp.Body, &userWithMemberships); err != nil {
 		resp.Diagnostics.AddError("Failed to parse user response", err.Error())
 		return
 	}

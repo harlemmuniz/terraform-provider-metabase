@@ -1,3 +1,9 @@
+## 1.1.2 (2026-01-21)
+
+BUG FIXES:
+
+- Fix "Failed to read user response" error in `metabase_permissions_group_membership` resource. The resource was attempting to read from an already-closed HTTP response body. Now uses the pre-read Body field from the response object.
+
 ## 0.13.2 (2026-01-14)
 
 BUG FIXES:
