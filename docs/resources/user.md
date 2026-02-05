@@ -13,23 +13,15 @@ A Metabase user.
 ## Example Usage
 
 ```terraform
-# Create a simple user
+# Create a user without password - Metabase will send a welcome email
+# for the user to set their own password
 resource "metabase_user" "john" {
   email      = "john@example.com"
   first_name = "John"
   last_name  = "Doe"
-  password   = "secure-password-123"
 }
 
-# Create a user and add them to groups using separate membership resources
-resource "metabase_permissions_group" "analytics" {
-  name = "Analytics"
-}
-
-resource "metabase_permissions_group" "engineering" {
-  name = "Engineering"
-}
-
+# Create a user with a specific password
 resource "metabase_user" "jane" {
   email      = "jane@example.com"
   first_name = "Jane"
@@ -37,18 +29,15 @@ resource "metabase_user" "jane" {
   password   = "secure-password-456"
 }
 
-# Add Jane to the Analytics group as a manager
+# Create a user and add them to groups using separate membership resources
+resource "metabase_permissions_group" "analytics" {
+  name = "Analytics"
+}
+
 resource "metabase_permissions_group_membership" "jane_analytics" {
   user_id          = metabase_user.jane.id
   group_id         = metabase_permissions_group.analytics.id
   is_group_manager = true
-}
-
-# Add Jane to the Engineering group as a member
-resource "metabase_permissions_group_membership" "jane_engineering" {
-  user_id          = metabase_user.jane.id
-  group_id         = metabase_permissions_group.engineering.id
-  is_group_manager = false
 }
 ```
 
@@ -69,7 +58,18 @@ resource "metabase_permissions_group_membership" "jane_engineering" {
 
 - `id` (Number) The ID of the user.
 
-## Note
+## Notes
+
+### Password Behavior
+
+The `password` field is optional:
+
+- **Without password**: If you don't provide a password, Metabase will automatically send a welcome email to the user. The user can then click the link in the email to set their own password.
+- **With password**: If you provide a password, the user will be created with that password and no welcome email will be sent.
+
+**Important**: The password is only used during user creation. Terraform cannot read or update passwords after the user is created, as the Metabase API doesn't expose password information.
+
+### Group Membership
 
 To add users to permission groups, use the `metabase_permissions_group_membership` resource separately.
 
